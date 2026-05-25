@@ -6,23 +6,31 @@ on:
       - master
 
 jobs:
-  build-and-test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+
         with:
-          node-version: 20
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Install Dependencies
-        run: npm install
+          script: |
+            cd taskforge-devops
 
-      - name: Build React App
-        run: npm run build
+            git pull origin master
 
-      - name: Build Docker Image
-        run: docker build -t taskforge-app .
+            sudo docker stop taskforge-container || true
+            sudo docker rm taskforge-container || true
+
+            sudo docker build -t taskforge-app .
+
+            sudo docker run -d -p 5173:5173 \
+              --name taskforge-container \
+              taskforge-app
