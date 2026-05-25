@@ -24,8 +24,6 @@ jobs:
           script: |
             cd ~/taskforge-devops/frontend
 
-            git pull origin master
-
             sudo docker stop taskforge-container || true
             sudo docker rm taskforge-container || true
 
