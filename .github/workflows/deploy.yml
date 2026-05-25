@@ -22,7 +22,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
 
           script: |
-            cd taskforge-devops/frontend
+            cd ~/taskforge-devops/frontend
 
             git pull origin master
 
