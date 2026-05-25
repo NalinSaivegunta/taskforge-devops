@@ -18,3 +18,4 @@ CI/CD Test
 pipeline test
 pipeline test
 redeploy test
+retry ssh
