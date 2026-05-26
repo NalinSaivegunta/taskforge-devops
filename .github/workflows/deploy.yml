@@ -1,0 +1,34 @@
+name: TaskForge CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+            cd ~/taskforge-devops/frontend
+
+            sudo docker stop taskforge-container || true
+            sudo docker rm taskforge-container || true
+
+            sudo docker build -t taskforge-app .
+
+            sudo docker run -d -p 5173:5173 \
+              --name taskforge-container \
+              taskforge-app
