@@ -22,7 +22,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
 
           script: |
-            cd ~/taskforge-devops/frontend
+                      cd /home/ubuntu/taskforge-devops/frontend
 
             sudo docker stop taskforge-container || true
             sudo docker rm taskforge-container || true
